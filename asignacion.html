@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entretiempo 309 — Asignación de Charlas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #b8963e;
+      --gold-subtle: rgba(184,150,62,0.10);
+      --gold-border: rgba(184,150,62,0.22);
+      --cream: #faf8f2;
+      --parch: #f2ede0;
+      --ink: #1c1a14;
+      --ink-mid: #5a5444;
+      --ink-light: #9a9080;
+      --chip-si: #1a6b3a;
+      --chip-si-bg: #e8f5ee;
+      --chip-no: #9a2020;
+      --chip-no-bg: #fbeaea;
+      --blue: #1a3d6b;
+      --blue-bg: #e8eff8;
+      --purple: #5a1a6b;
+      --purple-bg: #f0e8f5;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --cream: #1a1810; --parch: #222016; --ink: #f0ead6;
+        --ink-mid: #c8be9e; --ink-light: #7a7060;
+        --gold-subtle: rgba(240,217,140,0.07);
+        --gold-border: rgba(240,217,140,0.15);
+        --chip-si: #7ae0a0; --chip-si-bg: rgba(26,107,58,0.25);
+        --chip-no: #f09090; --chip-no-bg: rgba(154,32,32,0.25);
+        --blue: #90b8f0; --blue-bg: rgba(26,61,107,0.25);
+        --purple: #c090f0; --purple-bg: rgba(90,26,107,0.25);
+      }
+    }
+
+    html, body { min-height: 100%; background: var(--cream); font-family: 'Lato', sans-serif; color: var(--ink); }
+
+    .app { max-width: 700px; margin: 0 auto; padding-bottom: 5rem; }
+
+    /* HEADER */
+    .header { text-align: center; padding: 2.5rem 1.5rem 1.5rem; background: var(--parch); border-bottom: 1px solid var(--gold-border); }
+    .cross { display: block; font-size: 28px; color: var(--gold); margin-bottom: 0.6rem; }
+    .header h1 { font-family: 'Playfair Display', serif; font-size: clamp(18px,4vw,26px); font-weight: 600; color: var(--ink); }
+    .header h2 { font-family: 'Playfair Display', serif; font-size: clamp(12px,3vw,15px); font-style: italic; color: var(--gold); margin-top: 0.3rem; }
+    .ornament { display: flex; align-items: center; justify-content: center; gap: .75rem; margin-top: .8rem; color: var(--gold); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; }
+    .ornament::before, .ornament::after { content: ''; width: 40px; height: .5px; background: var(--gold); opacity: .5; }
+
+    /* LOGIN */
+    .login-card { margin: 1.5rem 1.25rem 0; background: var(--parch); border: .5px solid var(--gold-border); border-radius: 10px; padding: 1.5rem; }
+    .login-card h3 { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--ink); margin-bottom: 1rem; }
+    .field-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-light); margin-bottom: .45rem; }
+    .sel-wrap { position: relative; }
+    .sel-wrap::after { content: '▾'; position: absolute; right: .9rem; top: 50%; transform: translateY(-50%); color: var(--gold); pointer-events: none; font-size: 14px; }
+    select.field-select { width: 100%; padding: .7rem .9rem; border: .5px solid var(--gold-border); border-radius: 8px; background: var(--cream); font-family: 'Lato', sans-serif; font-size: 15px; color: var(--ink); outline: none; -webkit-appearance: none; appearance: none; cursor: pointer; }
+    select.field-select:focus { border-color: var(--gold); }
+    .btn-primary { display: inline-flex; align-items: center; gap: .5rem; margin-top: 1.1rem; background: var(--gold); color: #fff; border: none; border-radius: 8px; padding: .7rem 1.8rem; font-family: 'Lato', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: .05em; cursor: pointer; transition: opacity .2s; }
+    .btn-primary:hover { opacity: .88; }
+
+    /* ROLE BADGE */
+    .role-badge { display: inline-flex; align-items: center; padding: .3rem .8rem; border-radius: 20px; font-size: 12px; font-weight: 700; }
+    .badge-anim1 { background: var(--chip-si-bg); color: var(--chip-si); }
+    .badge-anim2 { background: var(--blue-bg); color: var(--blue); }
+    .badge-pilar1 { background: var(--purple-bg); color: var(--purple); }
+    .badge-pilar2 { background: rgba(184,150,62,0.15); color: var(--gold); }
+
+    /* WELCOME BAR */
+    .welcome-bar { margin: 1.25rem 1.25rem 0; background: var(--parch); border: .5px solid var(--gold-border); border-radius: 10px; padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .welcome-info { display: flex; flex-direction: column; gap: .35rem; }
+    .welcome-name { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--ink); }
+    .col-info { font-size: 12px; color: var(--ink-light); }
+    .logout-btn { font-size: 12px; padding: .3rem .75rem; border: .5px solid var(--gold-border); border-radius: 6px; background: transparent; color: var(--ink-light); cursor: pointer; font-family: 'Lato', sans-serif; white-space: nowrap; }
+    .logout-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* SECTION HEAD */
+    .section-head { padding: 1.4rem 1.25rem .4rem; }
+    .section-head h3 { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--ink); }
+    .section-head p { font-size: 13px; color: var(--ink-light); margin-top: .25rem; line-height: 1.5; }
+
+    /* DAY LABEL */
+    .day-label { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; background: var(--gold); color: #fff; border-radius: 4px; padding: .25rem .7rem; margin: 1.1rem 1.25rem .5rem; }
+
+    /* CHARLA CARD */
+    .charla-card { margin: 0 1.25rem .75rem; border: .5px solid var(--gold-border); border-radius: 10px; overflow: hidden; background: var(--parch); }
+    .charla-top { padding: .7rem 1rem; display: flex; align-items: flex-start; gap: .75rem; border-bottom: .5px solid var(--gold-border); background: var(--cream); }
+    .charla-time { font-size: 11px; color: var(--ink-light); white-space: nowrap; margin-top: 2px; min-width: 36px; }
+    .charla-title { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--ink); line-height: 1.4; flex: 1; }
+    .charla-body { padding: .85rem 1rem; }
+    .assign-label { font-size: 10.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-light); margin-bottom: .5rem; display: block; }
+
+    /* MEMBER GRID */
+    .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: .4rem; }
+    @media (max-width: 400px) { .member-grid { grid-template-columns: 1fr 1fr; } }
+    input[type="radio"].m-radio { display: none; }
+    .m-label { display: flex; align-items: center; gap: .4rem; padding: .4rem .6rem; border: .5px solid var(--gold-border); border-radius: 7px; font-size: 12px; color: var(--ink-mid); cursor: pointer; transition: all .15s; line-height: 1.3; user-select: none; -webkit-user-select: none; }
+    .m-label:hover { border-color: var(--gold); color: var(--gold); }
+    .m-label::before { content: ''; display: inline-block; width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid var(--gold-border); flex-shrink: 0; transition: all .15s; }
+    input[type="radio"].m-radio:checked + .m-label { border-color: var(--gold); background: var(--gold-subtle); color: var(--ink); font-weight: 700; }
+    input[type="radio"].m-radio:checked + .m-label::before { background: var(--gold); border-color: var(--gold); }
+
+    /* FINAL SECTION */
+    .final-wrap { margin: 1.5rem 1.25rem 0; border: .5px solid var(--gold-border); border-radius: 10px; overflow: hidden; }
+    .final-head { background: var(--parch); padding: .85rem 1rem; border-bottom: .5px solid var(--gold-border); }
+    .final-head h3 { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--ink); }
+    .final-head p { font-size: 12.5px; color: var(--ink-light); margin-top: .2rem; }
+    .final-row { padding: .85rem 1rem; border-bottom: .5px solid var(--gold-border); }
+    .final-row:last-child { border-bottom: none; }
+    .final-name { font-family: 'Playfair Display', serif; font-size: 13.5px; color: var(--ink); margin-bottom: .55rem; line-height: 1.35; }
+    .final-options { display: flex; flex-wrap: wrap; gap: .4rem; }
+    input.f-radio { display: none; }
+    .f-label { font-size: 12px; padding: .35rem .75rem; border: .5px solid var(--gold-border); border-radius: 6px; color: var(--ink-mid); cursor: pointer; transition: all .15s; user-select: none; white-space: nowrap; }
+    .f-label:hover { border-color: var(--gold); color: var(--gold); }
+    input.f-radio:checked + .f-label { background: var(--gold); color: #fff; border-color: var(--gold); font-weight: 700; }
+    .f-label.has-val { border-color: rgba(184,150,62,0.5); color: var(--ink-mid); }
+
+    /* SUBMIT */
+    .submit-area { padding: 1.75rem 1.25rem 0; text-align: center; }
+    .submit-btn { display: inline-flex; align-items: center; gap: .6rem; background: var(--gold); color: #fff; border: none; border-radius: 8px; padding: .85rem 2.5rem; font-family: 'Lato', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: .06em; cursor: pointer; transition: opacity .2s, transform .15s; }
+    .submit-btn:hover { opacity: .88; }
+    .submit-btn:active { transform: scale(.97); }
+    .submit-btn:disabled { opacity: .45; cursor: not-allowed; }
+    .status-msg { margin-top: 1rem; font-size: 14px; color: var(--ink-mid); min-height: 1.4rem; }
+    .status-msg.ok { color: var(--chip-si); font-weight: 700; }
+    .status-msg.err { color: var(--chip-no); }
+
+    .hidden { display: none !important; }
+
+    .footer-note { text-align: center; font-size: 12px; color: var(--ink-light); margin-top: 2rem; padding: 0 1.25rem; font-style: italic; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <header class="header">
+    <span class="cross">✝</span>
+    <h1>Entretiempo 309</h1>
+    <h2>Asignación de Charlas</h2>
+    <div class="ornament">Equipo de Coordinación</div>
+  </header>
+
+  <!-- LOGIN -->
+  <div id="loginSection">
+    <div class="login-card">
+      <h3>¿Quién sos?</h3>
+      <label class="field-label" for="userSelect">Seleccioná tu nombre</label>
+      <div class="sel-wrap">
+        <select class="field-select" id="userSelect">
+          <option value="">— elegí tu nombre —</option>
+          <option value="Emiliano Dorignac">Emiliano Dorignac (Animador 1)</option>
+          <option value="Sebastián Pagura">Sebastián Pagura (Animador 2)</option>
+          <option value="Daniel Peralta">Daniel Peralta (Pilar 1)</option>
+          <option value="Máximo Iglesias">Máximo Iglesias (Pilar 2)</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Ingresar</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="mainSection" class="hidden">
+
+    <div class="welcome-bar">
+      <div class="welcome-info">
+        <span class="welcome-name" id="welcomeName"></span>
+        <span class="role-badge" id="roleBadge"></span>
+        <span class="col-info" id="colInfo"></span>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Cambiar</button>
+    </div>
+
+    <div class="section-head">
+      <h3>Propuesta de oradores</h3>
+      <p>Para cada charla, seleccioná qué miembro del equipo propones que la dé. Podés dejar charlas sin selección.</p>
+    </div>
+
+    <div id="charlasList"></div>
+
+    <!-- FINAL SELECTION — only Animador 1 -->
+    <div id="finalSection" class="final-wrap hidden">
+      <div class="final-head">
+        <h3>Elección Final (columna L)</h3>
+        <p>Elegí entre las 4 propuestas para la selección definitiva de cada charla.</p>
+      </div>
+      <div id="finalList"></div>
+    </div>
+
+    <div class="submit-area">
+      <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">
+        Guardar selecciones
+      </button>
+      <div class="status-msg" id="statusMsg"></div>
+    </div>
+
+    <p class="footer-note">Viernes 26 al Domingo 27 de Septiembre de 2026 · CABA</p>
+  </div>
+
+</div>
+<script>
+  var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbySqns-csJBoa2zMqIBmx67fqvLsst7o7y_Kh6TGkBvV0qE2lKVeD2gUHNWqGAX1QQB/exec';
+
+  // ── Equipo completo (para proponer) ─────────────────────────────────────────
+  var equipo = [
+    'Daniel Betosini',
+    'Daniel Peralta',
+    'Diego Martinov',
+    'Emiliano Dorignac',
+    'Juan Ignacio Ruiz',
+    'Lucas Paez',
+    'Máximo Iglesias',
+    'Mariano Minguillon',
+    'Martin Pucheta',
+    'Matías Carrizo',
+    'Raúl Luna',
+    'Ricardo Avenati',
+    'Roman Redolfi',
+    'Sebastián Gette',
+    'Sebastián Pagura',
+    'Alejo Noir',
+  ].sort();
+
+  // ── Charlas asignables (excluye Sacerdote, Animadores, y dinámicas) ─────────
+  // Row = fila real en Google Sheets
+  var charlas = [
+    // VIERNES — col L vacía y tiene hora
+    { row: 7,  dia: 'Viernes',  hora: '23:25', titulo: 'El Hilo Primordial — "La Arañita"' },
+    // SÁBADO
+    { row: 9,  dia: 'Sábado',   hora: '8:00',  titulo: 'Parábola de Zaqueo — Meditación' },
+    { row: 10, dia: 'Sábado',   hora: '9:00',  titulo: 'Crisis y el Sentido de mi Vida — Primera Parte' },
+    { row: 11, dia: 'Sábado',   hora: '9:45',  titulo: 'Dinámica: Epitafio — Mi Plan de Vida' },
+    { row: 14, dia: 'Sábado',   hora: '12:00', titulo: 'Padre Misericordioso — Parábola del Hijo Pródigo' },
+    { row: 15, dia: 'Sábado',   hora: '15:00', titulo: 'Cristo, Proyecto de Dios para mi Vida' },
+    { row: 19, dia: 'Sábado',   hora: '22:15', titulo: 'San Pablo / Conversión de Saulo' },
+    { row: 20, dia: 'Sábado',   hora: '22:40', titulo: 'Celebración de la Luz' },
+    // DOMINGO
+    { row: 22, dia: 'Domingo',  hora: '7:45',  titulo: 'San José' },
+    { row: 23, dia: 'Domingo',  hora: '8:45',  titulo: 'María, Modelo de Entrega' },
+    { row: 24, dia: 'Domingo',  hora: '9:45',  titulo: 'Buen Samaritano — Prójimo' },
+    { row: 25, dia: 'Domingo',  hora: '10:30', titulo: 'Dinámica: Lavado de Pies' },
+    { row: 26, dia: 'Domingo',  hora: '11:40', titulo: 'Iglesia Doméstica y Misionera' },
+    { row: 27, dia: 'Domingo',  hora: '14:00', titulo: 'Segundo Tiempo — Proyecto Sustentable' },
+  ];
+
+  var usuarios = {
+    'Emiliano Dorignac': { rol: 'Animador 1', col: 'H', badge: 'badge-anim1' },
+    'Sebastián Pagura':  { rol: 'Animador 2', col: 'I', badge: 'badge-anim2' },
+    'Daniel Peralta':    { rol: 'Pilar 1',    col: 'J', badge: 'badge-pilar1' },
+    'Máximo Iglesias':   { rol: 'Pilar 2',    col: 'K', badge: 'badge-pilar2' },
+  };
+
+  var currentUser = null;
+  var sheetData = {};  // row -> {H, I, J, K, L}
+
+  // ── Login ──────────────────────────────────────────────────────────────────
+  function doLogin() {
+    var name = document.getElementById('userSelect').value;
+    if (!name || !usuarios[name]) return;
+    currentUser = Object.assign({ nombre: name }, usuarios[name]);
+
+    document.getElementById('loginSection').classList.add('hidden');
+    document.getElementById('mainSection').classList.remove('hidden');
+
+    document.getElementById('welcomeName').textContent = currentUser.nombre;
+    var badge = document.getElementById('roleBadge');
+    badge.textContent = currentUser.rol;
+    badge.className = 'role-badge ' + currentUser.badge;
+    document.getElementById('colInfo').textContent =
+      'Tu propuesta se guardará en columna ' + currentUser.col;
+
+    loadCurrentData();
+  }
+
+  function doLogout() {
+    currentUser = null;
+    document.getElementById('loginSection').classList.remove('hidden');
+    document.getElementById('mainSection').classList.add('hidden');
+    document.getElementById('statusMsg').textContent = '';
+    document.getElementById('statusMsg').className = 'status-msg';
+    document.getElementById('charlasList').innerHTML = '';
+    document.getElementById('finalList').innerHTML = '';
+    document.getElementById('finalSection').classList.add('hidden');
+  }
+
+  // ── Load current sheet data ────────────────────────────────────────────────
+  function loadCurrentData() {
+    var rows = charlas.map(function(c) { return c.row; }).join(',');
+    var url = WEB_APP_URL + '?action=read&rows=' + rows;
+
+    fetch(url)
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.ok && d.data) {
+          d.data.forEach(function(item) {
+            sheetData[item.row] = item;
+          });
+        }
+        renderAll();
+      })
+      .catch(function() {
+        // If read fails (e.g. CORS), still render with empty data
+        renderAll();
+      });
+  }
+
+  // ── Render everything ──────────────────────────────────────────────────────
+  function renderAll() {
+    renderCharlas();
+    if (currentUser.rol === 'Animador 1') {
+      renderFinal();
+      document.getElementById('finalSection').classList.remove('hidden');
+    }
+  }
+
+  // ── Render proposal cards ──────────────────────────────────────────────────
+  function renderCharlas() {
+    var container = document.getElementById('charlasList');
+    container.innerHTML = '';
+    var lastDia = '';
+
+    charlas.forEach(function(c) {
+      if (c.dia !== lastDia) {
+        lastDia = c.dia;
+        var dayEl = document.createElement('div');
+        dayEl.className = 'day-label';
+        dayEl.textContent = c.dia;
+        container.appendChild(dayEl);
+      }
+
+      var existing = sheetData[c.row] ? sheetData[c.row][currentUser.col] : '';
+
+      var card = document.createElement('div');
+      card.className = 'charla-card';
+
+      var topDiv = document.createElement('div');
+      topDiv.className = 'charla-top';
+      topDiv.innerHTML =
+        '<span class="charla-time">' + c.hora + '</span>' +
+        '<span class="charla-title">' + c.titulo + '</span>';
+
+      var bodyDiv = document.createElement('div');
+      bodyDiv.className = 'charla-body';
+
+      var lbl = document.createElement('span');
+      lbl.className = 'assign-label';
+      lbl.textContent = '¿Quién la da?';
+      bodyDiv.appendChild(lbl);
+
+      var grid = document.createElement('div');
+      grid.className = 'member-grid';
+
+      equipo.forEach(function(m) {
+        var uid = 'r' + c.row + '_' + m.replace(/[^a-zA-Z0-9]/g, '_');
+        var inp = document.createElement('input');
+        inp.type = 'radio';
+        inp.className = 'm-radio';
+        inp.name = 'charla_' + c.row;
+        inp.id = uid;
+        inp.value = m;
+        if (m === existing) inp.checked = true;
+
+        var mlbl = document.createElement('label');
+        mlbl.className = 'm-label';
+        mlbl.setAttribute('for', uid);
+        mlbl.textContent = m;
+
+        grid.appendChild(inp);
+        grid.appendChild(mlbl);
+      });
+
+      bodyDiv.appendChild(grid);
+      card.appendChild(topDiv);
+      card.appendChild(bodyDiv);
+      container.appendChild(card);
+    });
+  }
+
+  // ── Render final selection ────────────────────────────────────────────────
+  function renderFinal() {
+    var container = document.getElementById('finalList');
+    container.innerHTML = '';
+
+    charlas.forEach(function(c) {
+      var sd = sheetData[c.row] || {};
+      var opts = [
+        { key: 'H', label: 'Animador 1', val: sd.H || '' },
+        { key: 'I', label: 'Animador 2', val: sd.I || '' },
+        { key: 'J', label: 'Pilar 1',    val: sd.J || '' },
+        { key: 'K', label: 'Pilar 2',    val: sd.K || '' },
+      ];
+
+      var row = document.createElement('div');
+      row.className = 'final-row';
+
+      var nameEl = document.createElement('div');
+      nameEl.className = 'final-name';
+      nameEl.textContent = c.titulo;
+      row.appendChild(nameEl);
+
+      var optsDiv = document.createElement('div');
+      optsDiv.className = 'final-options';
+      optsDiv.id = 'fopts_' + c.row;
+
+      opts.forEach(function(opt, idx) {
+        var fid = 'f' + c.row + '_' + idx;
+        var inp = document.createElement('input');
+        inp.type = 'radio';
+        inp.className = 'f-radio';
+        inp.name = 'final_' + c.row;
+        inp.id = fid;
+        inp.value = opt.key;
+        if (sd.L && (sd.L === opt.val || sd.L === opt.label)) inp.checked = true;
+
+        var flbl = document.createElement('label');
+        flbl.className = 'f-label' + (opt.val ? ' has-val' : '');
+        flbl.setAttribute('for', fid);
+        flbl.textContent = opt.val ? opt.label + ': ' + opt.val.split(' ')[0] : opt.label;
+        flbl.title = opt.val || opt.label;
+
+        optsDiv.appendChild(inp);
+        optsDiv.appendChild(flbl);
+      });
+
+      row.appendChild(optsDiv);
+      container.appendChild(row);
+    });
+
+    // When a proposal radio changes, sync final labels
+    document.getElementById('charlasList').addEventListener('change', function(e) {
+      if (!e.target.name || !e.target.name.startsWith('charla_')) return;
+      var rowNum = parseInt(e.target.name.replace('charla_', ''));
+      var col = currentUser.col;
+      var colIdx = { H: 0, I: 1, J: 2, K: 3 }[col];
+      var finalOpts = document.querySelectorAll('#fopts_' + rowNum + ' .f-label');
+      if (finalOpts[colIdx]) {
+        var short = e.target.value.split(' ')[0];
+        finalOpts[colIdx].textContent = { H:'Animador 1', I:'Animador 2', J:'Pilar 1', K:'Pilar 2' }[col] + ': ' + short;
+        finalOpts[colIdx].title = e.target.value;
+        finalOpts[colIdx].classList.add('has-val');
+      }
+    });
+  }
+
+  // ── Submit ─────────────────────────────────────────────────────────────────
+  function handleSubmit() {
+    var statusEl = document.getElementById('statusMsg');
+    var btn = document.getElementById('submitBtn');
+
+    var proposals = charlas.map(function(c) {
+      var sel = document.querySelector('input[name="charla_' + c.row + '"]:checked');
+      return { row: c.row, titulo: c.titulo, miembro: sel ? sel.value : '' };
+    });
+
+    var finals = [];
+    if (currentUser.rol === 'Animador 1') {
+      finals = charlas.map(function(c) {
+        var sel = document.querySelector('input[name="final_' + c.row + '"]:checked');
+        return { row: c.row, eleccion: sel ? sel.value : '' };
+      });
+    }
+
+    var payload = {
+      nombre:    currentUser.nombre,
+      rol:       currentUser.rol,
+      columna:   currentUser.col,
+      proposals: proposals,
+      finals:    finals
+    };
+
+    btn.disabled = true;
+    statusEl.textContent = 'Guardando en la planilla…';
+    statusEl.className = 'status-msg';
+
+    fetch(WEB_APP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(function() {
+      statusEl.textContent = '✓ ¡Selecciones guardadas en la planilla!';
+      statusEl.className = 'status-msg ok';
+      btn.disabled = false;
+    })
+    .catch(function() {
+      statusEl.textContent = 'Error de conexión. Verificá internet e intentá de nuevo.';
+      statusEl.className = 'status-msg err';
+      btn.disabled = false;
+    });
+  }
+</script>
+</body>
+</html>
