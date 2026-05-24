@@ -230,16 +230,18 @@
 
     .col-headers {
       display: grid;
-      grid-template-columns: 2rem 1fr repeat(3, 5rem);
+      grid-template-columns: 1.5rem minmax(0, 1fr) repeat(3, 3.5rem);
       background: var(--parch);
       border-bottom: 1px solid var(--border-soft);
-      padding: 0.65rem 1rem;
+      padding: 0.65rem 0.75rem;
     }
 
     @media (max-width: 480px) {
       .col-headers,
       .charla-row {
-        grid-template-columns: 1.5rem 1fr repeat(3, 3.8rem);
+        grid-template-columns: 1.5rem minmax(0, 1fr) repeat(3, 3rem);
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
       }
     }
 
@@ -257,9 +259,9 @@
 
     .charla-row {
       display: grid;
-      grid-template-columns: 2rem 1fr repeat(3, 5rem);
+      grid-template-columns: 1.5rem minmax(0, 1fr) repeat(3, 3.5rem);
       align-items: center;
-      padding: 0.7rem 1rem;
+      padding: 0.7rem 0.75rem;
       border-bottom: 0.5px solid var(--border-soft);
       transition: background 0.15s;
     }
@@ -279,6 +281,14 @@
       color: var(--ink);
       padding-left: 0.5rem;
       line-height: 1.4;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      min-width: 0;
+    }
+
+    @media (max-width: 480px) {
+      .charla-name { font-size: 12.5px; }
+      .charla-num  { font-size: 11px; }
     }
 
     .charla-name.sacerdote::after {
@@ -313,6 +323,10 @@
       transition: all 0.15s;
       user-select: none;
       -webkit-user-select: none;
+    }
+
+    @media (max-width: 480px) {
+      .radio-label { width: 30px; height: 28px; font-size: 11px; border-radius: 5px; }
     }
 
     .radio-label:hover {
@@ -522,22 +536,21 @@
 
   <script>
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxuuzAm3KsdSt11DpzYn2nA__gzB8LylvoOpXCzHbfXdkas_ghhVMpWf0ZT7IiEceUn1w/exec';
-    
 
     const charlas = [
       { num: 1,  name: 'La Arañita',                                  sacerdote: false },
       { num: 2,  name: 'Zaqueo',                                       sacerdote: false },
       { num: 3,  name: 'El sentido de mi vida — crisis',               sacerdote: false },
       { num: 4,  name: 'Epitafio',                                     sacerdote: false },
-      { num: 5,  name: 'Padre Misericordioso: hijo Pródigo',           sacerdote: false },
-      { num: 6,  name: 'Cristo, proyecto de Dios para mi vida',        sacerdote: false },
-      { num: 7, name: 'Conversión de Saulo',                          sacerdote: false },
-      { num: 8, name: 'San José',                                     sacerdote: false },
-      { num: 9, name: 'Virgen María',                                 sacerdote: false },
-      { num: 10, name: 'Parábola del Buen Samaritano',                 sacerdote: false },
-      { num: 11, name: 'Lavado de Pies',                               sacerdote: false },
-      { num: 12, name: 'Iglesia Doméstica',                            sacerdote: false },
-      { num: 13, name: 'Segundo tiempo: proyecto sustentable',         sacerdote: false },
+      { num: 6,  name: 'Padre Misericordioso: hijo Pródigo',           sacerdote: false },
+      { num: 7,  name: 'Cristo, proyecto de Dios para mi vida',        sacerdote: false },
+      { num: 10, name: 'Conversión de Saulo',                          sacerdote: false },
+      { num: 11, name: 'San José',                                     sacerdote: false },
+      { num: 12, name: 'Virgen María',                                 sacerdote: false },
+      { num: 13, name: 'Parábola del Buen Samaritano',                 sacerdote: false },
+      { num: 14, name: 'Lavado de Pies',                               sacerdote: false },
+      { num: 15, name: 'Iglesia Doméstica',                            sacerdote: false },
+      { num: 16, name: 'Segundo tiempo: proyecto sustentable',         sacerdote: false },
     ];
 
     // Render rows
